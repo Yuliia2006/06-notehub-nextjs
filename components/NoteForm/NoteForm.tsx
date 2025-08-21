@@ -1,7 +1,7 @@
 import { Formik, Form, Field, ErrorMessage, type FormikHelpers } from 'formik';
 import * as Yup from "yup";
 import css from './NoteForm.module.css';
-import type { Note, NoteTag } from '../../types/note';
+import type { NoteTag } from '../../types/note';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { createNote } from '@/lib/api';
 
@@ -13,7 +13,6 @@ export type NoteFormValues = {
 };
 
 interface NoteFormProps {
-  onSuccess: (note: Note) => void;
   onCancel: () => void;
 }
 
@@ -28,14 +27,13 @@ const schema = Yup.object({
     .required("Required"),
 });
 
-export default function NoteForm({ onSuccess, onCancel }: NoteFormProps) {
+export default function NoteForm({ onCancel }: NoteFormProps) {
  const queryClient = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: createNote,
-    onSuccess: (newNote: Note) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      onSuccess(newNote);
       onCancel();
     },
     onError: (error) => {

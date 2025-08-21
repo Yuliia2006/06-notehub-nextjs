@@ -1,12 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   useQuery,
-  useQueryClient,
   keepPreviousData,
 } from "@tanstack/react-query";
-import { toast } from "react-hot-toast";
 import { useDebouncedCallback } from "use-debounce";
 import css from "@/app/notes/Notes.module.css";
 import { fetchNotes } from "@/lib/api";
@@ -17,7 +15,6 @@ import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
 
 export default function App() {
-  const queryClient = useQueryClient();
 
   const [currentPage, setCurrentPage] = useState(1);
   const [searchInput, setSearchInput] = useState("");
@@ -37,23 +34,6 @@ export default function App() {
       fetchNotes({ page: currentPage, perPage, search: searchQuery }),
     placeholderData: keepPreviousData,
   });
-
-  useEffect(() => {
-    if (!data) return;
-    if (currentPage > data.totalPages) {
-      setCurrentPage(data.totalPages || 1);
-    }
-
-   if (!isLoading && !isFetching && (data?.notes?.length ?? 0) === 0) {
-  toast("No such note found", { icon: "ℹ️", duration: 3000 });
-}
-  }, [data, currentPage, isLoading, isFetching]);
-  console.log("data from query:", data);
-
-  const handleCreateSuccess = async () => {
-    queryClient.invalidateQueries({ queryKey: ["notes"] });
-    setIsModalOpen(false);
-  };
 
   return (
     <div className={css.app}>
@@ -86,12 +66,11 @@ export default function App() {
       {isLoading && <strong>Loading notes...</strong>}
       {isError && <div>Error loading notes</div>}
 
-      {data && !isLoading && <NoteList notes={data.notes} />}
+      {data && data?.notes.length >= 1 && <NoteList notes={data.notes} />}
 
       {isModalOpen && (
         <Modal onClose={() => setIsModalOpen(false)}>
           <NoteForm
-            onSuccess={handleCreateSuccess}
             onCancel={() => setIsModalOpen(false)}
           />
         </Modal>
