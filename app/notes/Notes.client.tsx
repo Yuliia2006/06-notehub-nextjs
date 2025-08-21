@@ -26,8 +26,11 @@ export default function App() {
 
   const perPage = 12;
 
-  const debouncedSearch = useDebouncedCallback(setSearchQuery, 300);
-
+   const debouncedSearch = useDebouncedCallback((value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+   }, 500);
+  
   const { data, isLoading, isFetching, isError } = useQuery({
     queryKey: ["notes", currentPage, searchQuery],
     queryFn: () =>

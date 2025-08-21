@@ -5,10 +5,10 @@ import type { AxiosError } from 'axios';
 import { deleteNote } from '@/lib/api';
 
 interface NoteListProps {
-  notes?: Note[];
+  notes: Note[];
 }
 
-export default function NoteList({ notes = [] }: NoteListProps) {
+export default function NoteList({ notes }: NoteListProps) {
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation<Note, AxiosError, string>({
