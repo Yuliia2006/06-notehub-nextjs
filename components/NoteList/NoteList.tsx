@@ -17,7 +17,7 @@ export default function NoteList({ notes }: NoteListProps) {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
     },
     onError: (error: AxiosError) => {
-      console.error("Error deleting note:", error.response?.data || error.message);
+      console.error("Error deleting note:", error);
     },
   });
 
