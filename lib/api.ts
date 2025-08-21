@@ -16,11 +16,12 @@ export interface FetchNotesResponse {
 }
 
 export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {
+    const { page = 1, perPage = 12, search = '' } = params;
   const res = await axios.get<FetchNotesResponse>(`notes/`, {
+    params: { page, perPage, search },
     headers: {
       Authorization: `Bearer ${TOKEN}`,
     },
-    params, 
   });
   return res.data;
 };
@@ -41,7 +42,9 @@ export const deleteNote = async (id: string): Promise<Note> => {
   return res.data;
 };
 
-export const getSingleNote = async (id: string) => {
-  const res = await axios.get<Note>(`/notes/${id}`);
+export const getSingleNote = async (id: string): Promise<Note> => {
+  const res = await axios.get<Note>(`/notes/${id}`, {
+    headers: { Authorization: `Bearer ${TOKEN}` },
+  });
   return res.data;
 };
