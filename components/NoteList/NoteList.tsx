@@ -3,6 +3,7 @@ import type { Note } from '../../types/note';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { AxiosError } from 'axios';
 import { deleteNote } from '@/lib/api';
+import Link from 'next/link';
 
 interface NoteListProps {
   notes: Note[];
@@ -32,6 +33,7 @@ export default function NoteList({ notes }: NoteListProps) {
             <p className={css.content}>{note.content}</p>
             <div className={css.footer}>
               <span className={css.tag}>{note.tag}</span>
+               <Link href={`/notes/${note.id}`}>View Details</Link>
               <div className={css.actions}>
                 <button
                   className={`${css.button} ${css.delete} `}
